@@ -6,5 +6,6 @@ Input a color model and press enter and the rest of the fields auto updates in r
 ![2023-06-08_11-11](https://github.com/AhMadness/ColorAlchemy/assets/48402736/a4f8c9bd-6eb0-4896-95e9-30a9879405fd)
 
 
-Color Grid, Copy Formats Display:
+
+# Color Grid Option, Copy Formats Display:
 ![2023-06-08_11-05](https://github.com/AhMadness/ColorAlchemy/assets/48402736/1feab25b-8ac3-4f5d-aafa-b35562347179)
