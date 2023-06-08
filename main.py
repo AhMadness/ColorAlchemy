@@ -53,11 +53,11 @@ class ColorConverter(tk.Tk):
         self.history_frame.grid(row=len(self.color_formats) + 1, column=1, columnspan=4, sticky='W')
 
         image = Image.open("icon.png")
-        image = image.resize((30, 25), Image.LANCZOS)
+        image = image.resize((30, 25), Image.Resampling.LANCZOS)
         self.color_icon = ImageTk.PhotoImage(image)
 
         image2 = Image.open("copy.png")
-        image2 = image2.resize((25, 25), Image.LANCZOS)  # resize to fit button
+        image2 = image2.resize((25, 25), Image.Resampling.LANCZOS)  # resize to fit button
         self.copy_icon = ImageTk.PhotoImage(image2)
 
         self.preview_frame = tk.Frame(self, bg='grey20', padx=5, pady=5)
