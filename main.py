@@ -9,16 +9,18 @@ import os
 import sys
 from pynput.mouse import Listener as MouseListener
 from PIL import ImageGrab
+from cx_Freeze import setup, Executable
+
 
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
+    """ Get absolute path to resource, works for bundled and unbundled applications """
+    if getattr(sys, 'frozen', False):  # Check if the application is bundled
+        base_path = os.path.dirname(sys.executable)  # Use the directory where the executable is located
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))  # Use the directory of the script
 
     return os.path.join(base_path, relative_path)
+
 
 class ColorConverter(tk.Tk):
     def __init__(self):
@@ -28,7 +30,9 @@ class ColorConverter(tk.Tk):
         self.geometry("440x250")
         self.resizable(False, False)
 
-        self.iconbitmap("logo.ico")
+        # Use the resource_path function to correctly locate the logo.ico file.
+        icon_path = resource_path("logo.ico")
+        self.iconbitmap(icon_path)
 
         self.entries = []
         self.placeholders = ["#FFFFFF",
@@ -77,17 +81,17 @@ class ColorConverter(tk.Tk):
 
         # image = Image.open("icon.png")
         image = Image.open(resource_path("icon.png"))
-        image = image.resize((30, 25), Image.Resampling.LANCZOS)  # remove Resampling if didn't work
+        image = image.resize((30, 25), Image.LANCZOS)  # remove Resampling if didn't work
         self.color_icon = ImageTk.PhotoImage(image)
 
         # image2 = Image.open("copy.png")
         image2 = Image.open(resource_path("copy.png"))
-        image2 = image2.resize((25, 25), Image.Resampling.LANCZOS)  # resize to fit button
+        image2 = image2.resize((25, 25), Image.LANCZOS)  # resize to fit button
         self.copy_icon = ImageTk.PhotoImage(image2)
 
         # image3 = Image.open("copy.png")
         image3 = Image.open(resource_path("picker.png"))
-        image3 = image3.resize((25, 25), Image.Resampling.LANCZOS)  # resize to fit button
+        image3 = image3.resize((25, 25), Image.LANCZOS)  # resize to fit button
         flipped_image = image3.transpose(Image.FLIP_LEFT_RIGHT)
         self.picker_icon = ImageTk.PhotoImage(flipped_image)
 
