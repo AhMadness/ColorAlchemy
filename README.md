@@ -3,9 +3,10 @@ A real-time color code converter.
 Input a color model and press enter and the rest of the fields auto updates in real time to their respective conversion formats. Copies correct format for each model. (HEX, RGB, HSV, HSL)
 
 # Main App Interface:
-![user interface](https://github.com/AhMadness/ColorAlchemy/assets/48402736/bcfe374e-cd69-430f-b617-e2db8ab78d7a)
+![1](https://github.com/AhMadness/ColorAlchemy/assets/48402736/9e9f5aba-9d66-4e2a-86d3-048bdf1fd8db)
+
 
 <br>
 
-# Color Grid Option, Copy Formats Display:
-![features](https://github.com/AhMadness/ColorAlchemy/assets/48402736/6135e946-d7e6-4ca0-a72a-08c4a375f992)
+# Color Grid Option, Copy Formats Display, ColorPicker Tool:
+![2](https://github.com/AhMadness/ColorAlchemy/assets/48402736/76f5894a-bc85-45f4-bddd-d903d828cc19)
