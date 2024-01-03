@@ -5,7 +5,20 @@ from tkinter import colorchooser, ttk
 from PIL import Image, ImageTk
 from tkinter import Button
 from typing import Tuple
-from collections import deque
+import os
+import sys
+from pynput.mouse import Listener as MouseListener
+from PIL import ImageGrab
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 class ColorConverter(tk.Tk):
     def __init__(self):
@@ -14,6 +27,8 @@ class ColorConverter(tk.Tk):
         self.configure(bg='grey20')
         self.geometry("440x250")
         self.resizable(False, False)
+
+        self.iconbitmap("logo.ico")
 
         self.entries = []
         self.placeholders = ["#FFFFFF",
@@ -60,13 +75,22 @@ class ColorConverter(tk.Tk):
         # Grid history_frame after history_label
         self.history_frame.grid(row=len(self.color_formats) + 1, column=1, columnspan=5, sticky='W')
 
-        image = Image.open("icon.png")
-        image = image.resize((30, 25), Image.Resampling.LANCZOS)
+        # image = Image.open("icon.png")
+        image = Image.open(resource_path("icon.png"))
+        image = image.resize((30, 25), Image.Resampling.LANCZOS)  # remove Resampling if didn't work
         self.color_icon = ImageTk.PhotoImage(image)
 
-        image2 = Image.open("copy.png")
+        # image2 = Image.open("copy.png")
+        image2 = Image.open(resource_path("copy.png"))
         image2 = image2.resize((25, 25), Image.Resampling.LANCZOS)  # resize to fit button
         self.copy_icon = ImageTk.PhotoImage(image2)
+
+        # image3 = Image.open("copy.png")
+        image3 = Image.open(resource_path("picker.png"))
+        image3 = image3.resize((25, 25), Image.Resampling.LANCZOS)  # resize to fit button
+        flipped_image = image3.transpose(Image.FLIP_LEFT_RIGHT)
+        self.picker_icon = ImageTk.PhotoImage(flipped_image)
+
 
         self.preview_frame = tk.Frame(self, bg='grey20', padx=5, pady=5)
         self.preview_frame.place(x=335, y=29)
@@ -95,6 +119,10 @@ class ColorConverter(tk.Tk):
 
         self.copy_cmyk_button = Button(self.entry_frame, image=self.copy_icon, bg='grey20', bd=0, command=self.copy_cmyk_to_clipboard)
         self.copy_cmyk_button.grid(row=4, column=5, padx=(0, 50))
+
+        # Add a button for the screen color picker
+        screen_color_button = tk.Button(self, image=self.picker_icon, bg='grey20', bd=0, command=self.start_screen_color_picker)
+        screen_color_button.place(x=416, y=-2)  # Adjust position as needed
 
     def rgb_to_cmyk(self, r: float, g: float, b: float) -> Tuple[float, float, float, float]:
         if r == g == b == 0:  # black
@@ -256,6 +284,25 @@ class ColorConverter(tk.Tk):
     def color_button_command(self, color):
         self.select_history_color(color)
         self.copy_to_clipboard(color)  # Adding this line to copy hex code to clipboard
+
+    def start_screen_color_picker(self):
+        self.listener = MouseListener(on_click=self.on_screen_click)
+        self.listener.start()
+
+    def on_screen_click(self, x, y, button, pressed):
+        if pressed:
+            image = ImageGrab.grab(bbox=(x, y, x+1, y+1))
+            color = image.getpixel((0, 0))
+            self.after(0, self.update_color_from_screen, color)
+            self.listener.stop()
+
+    def update_color_from_screen(self, color):
+        hex_color = '#{:02x}{:02x}{:02x}'.format(*color)
+        rgb_normalized = (color[0]/255, color[1]/255, color[2]/255)
+        hsv = colorsys.rgb_to_hsv(*rgb_normalized)
+        hsl = colorsys.rgb_to_hls(*rgb_normalized)
+        cmyk = self.rgb_to_cmyk(*rgb_normalized)
+        self.set_color_values(rgb_normalized, hsv, hsl, hexa=hex_color, cmyk=cmyk, add_to_history=True)
 
 
 if __name__ == "__main__":
