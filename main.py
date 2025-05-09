@@ -9,7 +9,7 @@ import os
 import sys
 from pynput.mouse import Listener as MouseListener
 from PIL import ImageGrab
-from cx_Freeze import setup, Executable
+
 
 
 def resource_path(relative_path):
